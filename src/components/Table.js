@@ -21,6 +21,7 @@ import Switch from "@mui/material/Switch";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
+import StandardImageList from "./ImageList";
 
 function createData(name, calories, fat, carbs, protein) {
   return {
@@ -156,7 +157,8 @@ function EnhancedTableHead(props) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? "right" : "left"}
+            // align={headCell.numeric ? "right" : "left"}
+            align="center"
             padding={headCell.disablePadding ? "none" : "normal"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -254,7 +256,7 @@ export default function EnhancedTable(props) {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -271,7 +273,7 @@ export default function EnhancedTable(props) {
     setSelected([]);
   };
 
-  React.useEffect(() => {}, [JSON.stringify(rowsProp)]);
+  React.useEffect(() => { }, []);
 
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
@@ -353,9 +355,7 @@ export default function EnhancedTable(props) {
                     >
                       <TableCell padding="checkbox">
                         <Checkbox color="primary" checked={isItemSelected} />
-                        <TableCell padding="checkbox">
-                          <button onClick={handleEditButton(row)}>Edit</button>
-                        </TableCell>
+                        <button onClick={handleEditButton(row)}>Edit</button>
                       </TableCell>
 
                       <TableCell
@@ -363,13 +363,40 @@ export default function EnhancedTable(props) {
                         id={labelId}
                         scope="row"
                         padding="none"
+                        align="center"
                       >
-                        {row.name}
+                        <img src={row.sprite || row.sprites.front_default} />
                       </TableCell>
-                      <TableCell align="right">{row.calories}</TableCell>
-                      <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
+                      <TableCell align="center">{row.id}</TableCell>
+                      <TableCell align="center">{row.name}</TableCell>
+                      <TableCell align="center">
+                        {row.types.map(({slot, type}) => {
+                          const { name } = type;
+                          return (
+                            <ul key={slot}>
+                              <li>
+                                {name}
+                              </li>
+                            </ul>
+                          )
+                        })}
+                      </TableCell>
+                      <TableCell align="center">
+                        {
+                          row.friends?.map((friend) => {
+                            return (
+                              <ul key={friend}>
+                                <li>
+                                  {friend}
+                                </li>
+                              </ul>
+                            )
+                          })
+                        }
+                      </TableCell>
+                      <TableCell align="center">{row.height}</TableCell>
+                      <TableCell align="center">{row.weight}</TableCell>
+                      <TableCell align="center">{row.description}</TableCell>
                     </TableRow>
                   );
                 })}

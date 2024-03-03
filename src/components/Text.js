@@ -1,29 +1,37 @@
-import React from "react";
-import Box from "@mui/material/Box";
+import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 
-export default function Text() {
+export default function Text(props) {
+  const { label, newPokemon, setNewPokemon } = props;
+  const checkField = label === 'description' ? true : false;
+
+  const handleChange = (e) => {
+    setNewPokemon({...newPokemon, [e.target.name]: e.target.value});
+  }
+
   return (
-    <Box
+    <div
       component="form"
       sx={{
-        "& .MuiTextField-root": { m: 1, width: "25ch" },
+        "& .MuiTextField-root": { m: 1, width: "25ch"},
       }}
       noValidate
       autoComplete="off"
     >
-      <div>
+      <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection:"column", width: "25%", margin: "0 auto"}}>
         <TextField
-          // error
-          // id="standard-error-helper-text"
-          label="Error"
-          defaultValue="Hello World"
-          helperText="Incorrect entry."
+          label={label}
+          name={label}
+          helperText={`Enter ${label}`}
+          // defaultValue={newPokemon.name}
           variant="standard"
-          // rows={5}
-          // multiline={true}
+          value={checkField ? newPokemon.description : newPokemon.name}
+          onChange={handleChange}
+          rows={checkField ? 5 : 1}
+          multiline={checkField}
         />
+        
       </div>
-    </Box>
+    </div>
   );
 }

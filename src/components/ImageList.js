@@ -3,27 +3,39 @@ import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
 
+
+
 export default function StandardImageList(props) {
-  const [selected, setSelected] = React.useState(defaultValue);
-  setSelected((st) => st + 1);
+  const { sprites, newPokemon, setNewPokemon } = props;
+  const { other, versions, ...restSprites} = sprites;
+  const [isSelected, setIsSelected] = React.useState();
+
+  const handleChange = (e) => {
+    setIsSelected(e.target.src);
+    setNewPokemon({...newPokemon, sprite: e.target.src})
+  }
+  
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
       <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
-        {list &&
-          list.map((item) => (
-            <ImageListItem key={item.img}>
-              <img
-                src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                alt={item.title}
-                loading="lazy"
-                // onClick={handleChange(item.img)}
-              />
-              <ImageListItemBar title={item.title} subtitle={item.author} />
-            </ImageListItem>
-          ))}
+        {restSprites &&
+          Object.entries(restSprites).filter((item) => item[1] !== null).map((item) => {
+            return (
+              <ImageListItem key={item[0]} sx={{border: isSelected?.includes(item[1]) && "3px solid red"}}  >
+                <img
+                  src={`${item[1]}?w=164&h=164&fit=crop&auto=format`}
+                  srcSet={`${item[1]}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                  alt={item[0]}
+                  loading="lazy"
+                  onClick={handleChange}
+                />
+                <ImageListItemBar title={item[0]} />
+              </ImageListItem>
+            )
+          })}
       </ImageList>
     </div>
+    
   );
 }
 
@@ -77,3 +89,5 @@ const list = [
     title: "Bike",
   },
 ];
+
+

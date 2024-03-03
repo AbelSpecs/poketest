@@ -41,15 +41,24 @@ function getStyles(name, personName, theme) {
   };
 }
 
-export default function Select() {
+export default function PokeSelect(props) {
   const theme = useTheme();
-  const [personName, setPersonName] = React.useState([]);
+  const { label, options, setFilterTypes, setFriends, newPokemon, setNewPokemon } = props;
+  const [newValue, setNewValue] = React.useState([]);
 
   const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName(
+    const { target: { value }} = event;  
+    
+    if(event.target.name === 'types'){
+      const newType = { slot: newValue.length + 1, type: { name: value }};
+      setFilterTypes(value);
+      setNewPokemon({...newPokemon, [event.target.name]: [newType]});
+    }else{
+      setFriends(value);
+      setNewPokemon({...newPokemon, [event.target.name]: value});
+    }
+
+    setNewValue(
       // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
     );
@@ -63,7 +72,8 @@ export default function Select() {
           labelId="demo-multiple-chip-label"
           id="demo-multiple-chip"
           multiple
-          value={personName}
+          name={label}
+          value={newValue}
           onChange={handleChange}
           input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
           renderValue={(selected) => (
@@ -75,11 +85,11 @@ export default function Select() {
           )}
           MenuProps={MenuProps}
         >
-          {names.map((name) => (
+          {options?.map(({name}) => (
             <MenuItem
               key={name}
               value={name}
-              style={getStyles(name, personName, theme)}
+              style={getStyles(name, newValue, theme)}
             >
               {name}
             </MenuItem>
